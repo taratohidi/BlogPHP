@@ -12,9 +12,22 @@
         {% block javascripts %}
             {{ encore_entry_script_tags('app') }}
         {% endblock %}
+        <!-- CSS only -->
+{# <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous"> #}
+         <script src="https://cdn.tailwindcss.com"></script>
+         <script>
+         tailwind.config {
+            darkMode: 'class'
+         }
+         </script>
     </head>
-    <body>
+    <body class="bg-gray-100 text-gray-800 m-10 dark:bg-gray-800 dark:text-white">
     <h1> Hello Symfony </h1>
-        {% block body %}{% endblock %}
+   <div class="w-full md:w-2/3 mx-auto">
+   {% for message in app.flashes('success') %}
+            <div class="rounded-md p-2 border-green-300 bg-green-50 border dark:border-green-600 dark:bg-green-700 dark:text-white mb-4">{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% block body %}{% endblock %}
     </body>
 </html>

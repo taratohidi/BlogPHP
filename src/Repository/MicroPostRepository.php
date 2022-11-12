@@ -20,14 +20,15 @@ class MicroPostRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, MicroPost::class);
     }
-    // public function add(MicroPost $entity, bool $flush = false): void
-    // {
-    //     $this->getEntityManager()->persist($entity);
+    
+    public function add(MicroPost $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->persist($entity);
 
-    //     if ($flush) {
-    //         $this->getEntityManager()->flush();
-    //     }
-    // }
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
 
     public function save(MicroPost $entity, bool $flush = false): void
     {
