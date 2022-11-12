@@ -1,9 +1,11 @@
-{% extends "base.html.twig" %}
-{% block title %}Edit an Existing Post{% endblock %}
+{% extends 'base.html.twig' %}
+
+{% block title %}Editing an Existing Post{% endblock %}
+
+{% block bread %}
+ → Edit
+{% endblock %}
 
 {% block body %}
-
-
-{{ include("micro_post/_form.html.twig") }}
-
+  {{ include ('micro_post/_form.html.twig') }}
 {% endblock %}
