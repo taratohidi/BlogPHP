@@ -2,18 +2,19 @@
 
 namespace App\Controller;
 
-use App\Entity\Comment;
 use DateTime;
+use App\Entity\Comment;
 use App\Entity\MicroPost;
 use App\Form\CommentType;
 use App\Form\MicroPostType;
 use App\Repository\CommentRepository;
 use App\Repository\MicroPostRepository;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\HttpFoundation\Request;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class MicroPostController extends AbstractController
 {
@@ -21,6 +22,7 @@ class MicroPostController extends AbstractController
     // Pass MicroPostRepository class as parameter to index for managing data index(MicroPostRepository $posts)
     public function index(MicroPostRepository $posts): Response
     {
+        
         // dd($posts->findAll());
         // dd($posts->find(id));
         // dd($posts->findOneBy(['title' => 'Welcome to Iran']));
@@ -45,6 +47,7 @@ class MicroPostController extends AbstractController
     }
 
     #[Route('/micro-post/{post}', name: 'app_micro_post_show')]
+    #[IsGranted(MicroPost::VIEW, 'post')]
     public function showOne(MicroPost $post): Response
     {
        
@@ -54,15 +57,18 @@ class MicroPostController extends AbstractController
     }
 
     #[Route('/micro-post/add', name: 'app_micro_post_add', priority: 2)]
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
     public function addPost(Request $request, MicroPostRepository $posts): Response
     {
+        
     //   $microPost = new MicroPost();
+    // $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
       $form = $this->createForm(MicroPostType::class, new MicroPost());
       $form -> handleRequest($request);
         
         if($form->isSubmitted() && $form->isValid()) {
             $post = $form->getData();
-            $post->setCreated(new DateTime());
+            $post->setAuthor($this->getUser());
             $posts->add($post, true);
 
             // Add flash message
@@ -83,10 +89,14 @@ class MicroPostController extends AbstractController
     }
 
     #[Route('/micro-post/{post}/edit', name: 'app_micro_post_edit')]
+    #[IsGranted(MicroPost::EDIT, 'post')]
     public function editPost(MicroPost $post, Request $request, MicroPostRepository $posts): Response
     {
+        
         $form = $this->createForm(MicroPostType::class, $post);
         $form -> handleRequest($request);
+
+        $this->denyAccessUnlessGranted(MicroPost::EDIT, $post);
         
         if($form->isSubmitted() && $form->isValid()) {
             $post = $form->getData();
@@ -111,7 +121,8 @@ class MicroPostController extends AbstractController
     }
 
     #[Route('/micro-post/{post}/comment', name: 'app_micro_post_comment')]
-    // #[IsGranted('ROLE_COMMENTER')]
+    #[IsGranted('ROLE_COMMENTER')]
+   
     public function addComment(
         MicroPost $post,
         Request $request,
@@ -126,7 +137,7 @@ class MicroPostController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $comment = $form->getData();
             $comment->setPost($post);
-            // $comment->setAuthor($this->getUser());
+            $comment->setAuthor($this->getUser());
             $comments->add($comment, true);
 
             // Add a flash

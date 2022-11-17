@@ -10,6 +10,9 @@
   <div class="text-gray-500 dark:text-gray-400">
     {{ post.created | date("M j, Y") }}
   </div>
+  <div class="text-sm text-gray-500 dark:text-gray-400">
+    {{ post.author.email }}
+  </div>
   {# <div>
     {% if post.likedBy.contains(app.user) %}
     <a href="{{ path('app_unlike', { id: post.id }) }}">
@@ -27,6 +30,6 @@
  #}
    <div class="flex">
     <a href="{{ path('app_micro_post_edit', { post: post.id }) }}" class="mr-2">Edit</a>
-    <a href="{{ path('app_micro_post_comment', { post: post.id }) }}">Comment <span class="px-2 rounded-md bg-gray-200 dark:bg-gray-700">{{post.comments.count}}</span></a>
+    <a href="{{ path('app_micro_post_comment', { post: post.id }) }}"> Comment <span class="px-2 rounded-md bg-gray-200 dark:bg-gray-700">{{post.comments.count}}</span></a>
   </div>
 </div>
