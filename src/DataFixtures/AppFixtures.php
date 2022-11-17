@@ -13,9 +13,7 @@ class AppFixtures extends Fixture
 {
     public function __construct(
         private UserPasswordHasherInterface $userPasswordHasher
-    )
-    {
-        
+    ) {        
     }
 
 
@@ -33,6 +31,18 @@ class AppFixtures extends Fixture
                 '12345678'
             )
             );
+        $manager->persist($user1);
+
+
+        $user2 = new User();
+        $user2->setEmail('john@test.com');
+        $user2->setPassword(
+            $this->userPasswordHasher->hashPassword(
+                $user2,
+                '12345678'
+            )
+        );
+        $manager->persist($user2);
 
         $microPost2 = new MicroPost();
         $microPost2->setTitle('Welcome to Canada!');
